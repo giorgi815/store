@@ -6,7 +6,6 @@ const search = document.querySelector("#search")
 
 let allProducts = []
 
-// render products
 fetch("https://fakestoreapi.com/products")
 .then(resp => resp.json())
 .then(data => {
@@ -70,7 +69,7 @@ function renderProducts(prod){
 }
 
 
-// add products
+
 fetch("https://fakestoreapi.com/products", {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
