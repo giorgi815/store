@@ -1,39 +1,28 @@
-const form = document.querySelector("#loginForm")
-const password = document.querySelector("#password")
-const userName = document.querySelector("#username")
+const form = document.querySelector("#loginForm");
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault()
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  if (!userName.value || !password.value) {
-    alert("Please fill all fields")
-    return
+  const username = document.querySelector("#username").value.trim();
+  const password = document.querySelector("#password").value.trim();
+
+  console.log({ username, password });
+
+  const res = await fetch("https://dummyjson.com/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+
+  console.log("API RESPONSE:", data);
+
+  if (!res.ok) {
+    alert(data.message || "Invalid credentials");
+    return;
   }
 
-  fetch("https://fakestoreapi.com/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: userName.value.trim(),
-      password: password.value.trim()
-    })
-  })
-  .then(async resp => {
-    if (!resp.ok) {
-      const errorText = await resp.text()
-      throw new Error(errorText)
-    }
-    return resp.json()
-  })
-  .then(data => {
-    localStorage.setItem("token", data.token)
-    console.log("Logged in")
-    window.location.href = "../index.html"
-  })
-  .catch(err => {
-    console.error(err.message)
-    alert(err.message)
-  })
-})
+  localStorage.setItem("token", data.token);
+  window.location.href = "../index.html";
+});
